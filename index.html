@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nimbus 38 | Homes in the sky, Gurugram</title>
+  <meta name="description" content="Nimbus 38 is a 20-floor tower of homes at 38 Golf Course Road, Gurugram. Point at the tower to pick a floor, see which homes are free and walk through them.">
+  <meta name="theme-color" content="#0c261f">
+  <script>document.documentElement.classList.add("js");</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=Marcellus&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="bar">
+    <a class="mark" href="#/" id="home"><span id="markName">Nimbus 38</span> <small id="markKind">Homes in the sky, Gurugram</small></a>
+    <a class="btn" id="enquire" href="#">Book a visit</a>
+  </header>
+
+  <main>
+    <!-- 1. The tower: point at a floor, click to open it -->
+    <section class="view view-tower" id="viewTower" aria-labelledby="towerTitle">
+      <!-- The wide picture, shown whole at the full height of the screen. -->
+      <div class="tower-frame">
+        <div class="tower-in" id="towerFrame">
+          <div id="towerPic"></div>
+          <div class="bands" id="bands"></div>
+          <div class="floor-line" id="floorLine" hidden><span id="floorTag"></span></div>
+        </div>
+      </div>
+      <div class="tower-shade" aria-hidden="true"></div>
+      <div class="lead">
+        <h1 id="towerTitle" tabindex="-1"></h1>
+        <p class="lead-intro" id="towerIntro"></p>
+
+        <!-- What the pointer is on right now -->
+        <div class="readout" aria-live="polite">
+          <p class="readout-zone" id="readZone"></p>
+          <p class="readout-floor"><span id="readWord">Floor</span> <b id="readFloor"></b></p>
+          <p class="readout-line" id="readLine"></p>
+          <a class="btn" id="readOpen" href="#"></a>
+        </div>
+
+        <dl class="facts" id="towerFacts"></dl>
+      </div>
+
+      <!-- Every home in the tower, floor by floor: also the way in by keyboard and on phones -->
+      <div class="stack">
+        <div class="stack-head">
+          <h2>Every home</h2>
+          <div class="chips" id="chips" role="group" aria-label="Show homes by size"></div>
+        </div>
+        <ol class="stack-rows" id="stackRows" aria-label="Floors, from the top down"></ol>
+        <ul class="key" id="key"></ul>
+      </div>
+
+    </section>
+
+    <!-- 2. A floor: its cutaway plan, with a marker on every home -->
+    <section class="view view-floor" id="viewFloor" aria-labelledby="floorName" hidden>
+      <div class="plan">
+        <div class="plan-frame" id="planFrame">
+          <div id="planPic"></div>
+          <div class="dots" id="dots"></div>
+        </div>
+      </div>
+      <aside class="panel">
+        <p class="panel-where" id="floorWhere"></p>
+        <div class="floor-head">
+          <h2 id="floorName" tabindex="-1"></h2>
+          <div class="stepper">
+            <a id="floorUp" href="#">Floor above</a>
+            <a id="floorDown" href="#">Floor below</a>
+          </div>
+        </div>
+        <dl class="panel-facts" id="floorFacts"></dl>
+        <p class="panel-text" id="floorText"></p>
+        <ul class="unit-list" id="unitList"></ul>
+        <div class="panel-actions">
+          <a class="btn" id="floorEnquire" href="#">Book a visit</a>
+          <a class="btn btn-line" href="#/">Back to the tower</a>
+        </div>
+        <p class="small-print">Demo site. The tower, prices and contact details are invented, and the pictures are computer-generated.</p>
+      </aside>
+    </section>
+
+    <!-- 3. A home: its rooms, one picture at a time -->
+    <section class="view view-home" id="viewHome" aria-labelledby="homeName" hidden>
+      <div class="home-stage">
+        <div class="home-pics" id="homePics"></div>
+        <div class="home-caption">
+          <h3 id="roomName"></h3>
+          <p id="roomText"></p>
+        </div>
+        <ul class="thumbs" id="thumbs" aria-label="Rooms in this home"></ul>
+      </div>
+      <aside class="panel">
+        <p class="panel-where" id="homeWhere"></p>
+        <h2 id="homeName" tabindex="-1"></h2>
+        <p class="home-kind" id="homeKind"></p>
+        <p class="home-price"><b id="homePrice"></b> <span class="pill" id="homeStatus"></span></p>
+        <dl class="panel-facts" id="homeFacts"></dl>
+        <p class="panel-text" id="homeNote"></p>
+        <div class="panel-actions">
+          <a class="btn" id="homeEnquire" href="#"></a>
+          <a class="btn btn-line" id="homeBack" href="#/"></a>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <p class="place-read" id="placeRead" hidden></p>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,1105 @@
+:root {
+  --page: #0c261f;         /* deep emerald: the page, and the background of the floor plans */
+  --sheet: #113229;        /* a shade lighter: panels and cards */
+  --ivory: #f3ebdb;        /* text */
+  --soft: rgba(243, 235, 219, 0.72);
+  --faint: rgba(243, 235, 219, 0.46);
+  --rule: rgba(243, 235, 219, 0.18);
+  --gold: #cfa968;         /* the one accent: what is free, what can be opened */
+  --gold-bright: #e4c58c;
+  --copper: #c47a52;       /* on hold */
+  --gone: rgba(243, 235, 219, 0.17); /* sold */
+  --deep: #0a1f19;         /* text on gold and ivory */
+
+  --display: "Marcellus", "Cinzel", Georgia, serif;
+  --text: "Jost", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --pad: clamp(18px, 3.2vw, 52px);
+  --bar-h: 70px;
+  --panel-w: clamp(350px, 31vw, 450px);
+  --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: clip;
+}
+
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ivory);
+  font-family: var(--text);
+  font-weight: 300;
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+dl,
+dd {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--display);
+  font-weight: 400;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+h1:focus,
+h2:focus {
+  outline: none;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* A picture slot. Empty slots say which file they are waiting for. */
+.pic {
+  background: #153a30 center / cover no-repeat;
+}
+
+.pic.is-empty {
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--soft);
+  outline: 1px dashed var(--rule);
+  outline-offset: -10px;
+}
+
+.pic.is-empty::after {
+  content: "Add " attr(data-file) " to assets/tower";
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-block;
+  padding: 0.78em 1.6em;
+  border: 1px solid var(--gold);
+  background: var(--gold);
+  color: var(--deep);
+  font-weight: 500;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  text-align: center;
+  transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
+}
+
+.btn:hover {
+  background: var(--gold-bright);
+  border-color: var(--gold-bright);
+}
+
+.btn-line {
+  border-color: rgba(243, 235, 219, 0.55);
+  background: none;
+  color: var(--ivory);
+}
+
+.btn-line:hover {
+  background: var(--ivory);
+  border-color: var(--ivory);
+  color: var(--deep);
+}
+
+/* ---------- Header ---------- */
+
+.bar {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: var(--bar-h);
+  padding: 0 var(--pad);
+  pointer-events: none;
+}
+
+.bar > * {
+  pointer-events: auto;
+}
+
+.mark {
+  font-family: var(--display);
+  font-size: 1.55rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+
+.mark small {
+  margin-left: 12px;
+  padding-left: 14px;
+  border-left: 1px solid var(--gold);
+  font-family: var(--text);
+  font-size: 0.86rem;
+  letter-spacing: 0.02em;
+  color: var(--soft);
+}
+
+/* ---------- The three views ---------- */
+
+.view {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--page);
+  will-change: transform, opacity;
+}
+
+/* ---------- 1. The tower ---------- */
+
+/* The words sit over the open sky on the left of the picture. */
+.lead {
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: flex;
+  flex-direction: column;
+  width: min(33rem, 36vw);
+  padding: calc(var(--bar-h) + clamp(10px, 3.4vh, 38px)) var(--pad) 28px;
+}
+
+.lead h1 {
+  font-size: clamp(2.7rem, 5.1vw, 4.9rem);
+  line-height: 1;
+  letter-spacing: 0.005em;
+  text-wrap: balance;
+}
+
+/* A short gold rule under the title. */
+.lead h1::after {
+  content: "";
+  display: block;
+  width: 64px;
+  height: 1px;
+  margin-top: clamp(14px, 2.4vh, 24px);
+  background: var(--gold);
+}
+
+.lead-intro {
+  max-width: 30rem;
+  margin-top: clamp(12px, 2.2vh, 22px);
+  color: var(--soft);
+}
+
+/* What the pointer is on. */
+.readout {
+  max-width: 30rem;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+
+.readout-zone {
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  color: var(--gold);
+}
+
+.readout-floor {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  line-height: 0.95;
+}
+
+.readout-floor span {
+  font-size: 1rem;
+  color: var(--soft);
+}
+
+.readout-floor b {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(4.2rem, 16vh, 8.4rem);
+  letter-spacing: -0.01em;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--ivory);
+}
+
+.readout-line {
+  min-height: 3.1em;
+  margin-top: 6px;
+}
+
+.readout .btn {
+  margin-top: 6px;
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px clamp(20px, 2.6vw, 42px);
+  margin-top: clamp(16px, 3.4vh, 34px);
+}
+
+.facts dt,
+.panel-facts dt {
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
+  color: var(--faint);
+}
+
+.facts dd {
+  font-family: var(--display);
+  font-size: 1.22rem;
+  line-height: 1.25;
+}
+
+/* Every home, floor by floor. */
+.stack {
+  position: absolute;
+  right: min(var(--pad), 2vw, 2.6vh);
+  top: calc(50% + var(--bar-h) / 2 - 8px);
+  transform: translateY(-50%);
+  width: clamp(212px, min(16vw, 28vh), 246px); /* narrower on small screens, so it never covers the tower */
+  padding: 14px 16px;
+  background: rgba(10, 31, 25, 0.74);
+  border: 1px solid var(--rule);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.stack-head h2 {
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 8px 0 12px;
+}
+
+.chip {
+  padding: 2px 6px;
+  border: 1px solid var(--rule);
+  background: none;
+  font-size: 0.76rem;
+  cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.chip:hover {
+  border-color: var(--gold);
+}
+
+.chip[aria-pressed="true"] {
+  border-color: var(--gold);
+  background: var(--gold);
+  color: var(--deep);
+  font-weight: 400;
+}
+
+.stack-row {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  align-items: center;
+  height: clamp(13px, 2.2vh, 21px);
+}
+
+.stack-n {
+  font-size: 0.68rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--faint);
+}
+
+.stack-cells {
+  display: flex;
+  gap: 2px;
+  height: 100%;
+  padding: 1px 0;
+}
+
+.cell {
+  flex: 1;
+  display: block;
+  background: var(--gone);
+  transition: opacity 200ms ease;
+}
+
+.cell.is-free {
+  background: var(--gold);
+}
+
+.cell.is-held {
+  background: var(--copper);
+}
+
+.cell.is-dim {
+  opacity: 0.14;
+}
+
+.stack-row:hover .stack-n,
+.is-on .stack-n {
+  color: var(--ivory);
+  font-weight: 400;
+}
+
+.is-on .stack-cells {
+  outline: 1px solid var(--ivory);
+  outline-offset: 2px;
+}
+
+.key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 9px;
+  margin-top: 14px;
+  font-size: 0.74rem;
+  color: var(--soft);
+}
+
+.key li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.key .cell {
+  flex: none;
+  width: 10px;
+  height: 10px;
+}
+
+/* The tower picture is wide (16:9) and is always shown at the full height of
+   the screen, never cropped top or bottom. It is pinned to the right edge,
+   where the tower stands, so a narrower window only loses sky on the left.
+   Bands are placed on the inner box in percent. */
+.tower-frame {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+.tower-in,
+.tower-in > .pic {
+  position: absolute;
+  inset: 0;
+}
+
+/* On a window wider than the picture, its left edge melts into the page colour. */
+.tower-in > .pic {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 20%);
+  mask-image: linear-gradient(to right, transparent, #000 20%);
+}
+
+.tower-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right, rgba(10, 31, 25, 0.9), rgba(10, 31, 25, 0.62) 24%, rgba(10, 31, 25, 0) 50%),
+    linear-gradient(to bottom, rgba(10, 31, 25, 0.5), rgba(10, 31, 25, 0) 16%),
+    linear-gradient(to top, rgba(10, 31, 25, 0.55), rgba(10, 31, 25, 0) 20%);
+  pointer-events: none;
+}
+
+.bands {
+  position: absolute;
+  inset: 0;
+}
+
+.band {
+  position: absolute;
+}
+
+.band.is-open {
+  cursor: pointer;
+}
+
+/* The strip on the floor being pointed at. */
+.floor-line {
+  position: absolute;
+  min-height: 4px;
+  background: rgba(255, 244, 214, 0.34);
+  box-shadow: 0 0 0 1px var(--gold-bright), 0 0 30px rgba(228, 197, 140, 0.75);
+  pointer-events: none;
+  transition: top 110ms ease, height 110ms ease, left 110ms ease, width 110ms ease;
+}
+
+.floor-line.is-closed {
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 0 0 1px rgba(243, 235, 219, 0.75);
+}
+
+.floor-line span {
+  position: absolute;
+  right: calc(100% + 14px);
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 3px 11px;
+  background: var(--gold);
+  color: var(--deep);
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+/* ---------- 2. A floor ---------- */
+
+.view-floor,
+.view-home {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--panel-w);
+}
+
+.plan {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  padding: calc(var(--bar-h) + 8px) clamp(12px, 2vw, 36px) 24px;
+}
+
+/* The plan picture, shown whole. Markers are placed on it in percent. */
+.plan-frame {
+  position: relative;
+  width: min(100%, calc((100vh - var(--bar-h) - 40px) * 16 / 9));
+  aspect-ratio: 16 / 9;
+}
+
+.plan-frame > .pic {
+  position: absolute;
+  inset: 0;
+  background-color: transparent;
+  background-size: contain;
+  /* Fade the last sliver of each edge into the page. */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent), linear-gradient(to bottom, transparent, #000 4%, #000 96%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 3%, #000 97%, transparent), linear-gradient(to bottom, transparent, #000 4%, #000 96%, transparent);
+  mask-composite: intersect;
+}
+
+.plan-frame > .pic.is-empty {
+  background-color: #153a30;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.dots {
+  position: absolute;
+  inset: 0;
+}
+
+/* One home on the plan: a round marker with its letter. */
+.dot {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  border: 1px solid var(--faint);
+  border-radius: 50%;
+  background: rgba(10, 31, 25, 0.85);
+  color: var(--soft);
+  font-family: var(--display);
+  font-size: 1.1rem;
+  line-height: 1;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  transition: transform 220ms var(--ease), box-shadow 220ms ease;
+}
+
+.dot.is-free {
+  border-color: var(--gold-bright);
+  background: var(--gold);
+  color: var(--deep);
+}
+
+.dot.is-held {
+  border-color: var(--copper);
+  color: #e9b092;
+}
+
+.dot.is-hot,
+.dot:focus-visible {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 6px rgba(207, 169, 104, 0.22), 0 6px 18px rgba(0, 0, 0, 0.45);
+  outline: none;
+  z-index: 2;
+}
+
+.dot-label {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 12px);
+  transform: translateX(-50%);
+  display: grid;
+  gap: 1px;
+  padding: 8px 13px;
+  background: var(--ivory);
+  color: var(--deep);
+  font-family: var(--text);
+  text-align: left;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+
+.dot-label b {
+  font-weight: 500;
+  font-size: 0.86rem;
+}
+
+.dot-label small {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: rgba(10, 31, 25, 0.72);
+}
+
+.dot.is-hot .dot-label,
+.dot:focus-visible .dot-label {
+  opacity: 1;
+}
+
+.panel {
+  overflow-y: auto;
+  padding: calc(var(--bar-h) + 14px) clamp(20px, 2.3vw, 36px) 26px;
+  background: var(--sheet);
+  border-left: 1px solid var(--rule);
+}
+
+.panel-where {
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+}
+
+.floor-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 2px;
+}
+
+.panel h2 {
+  font-size: clamp(2.5rem, 3.8vw, 3.6rem);
+  line-height: 1.02;
+  letter-spacing: 0.005em;
+}
+
+.stepper {
+  display: grid;
+  flex: none;
+  gap: 4px;
+  padding-bottom: 6px;
+}
+
+.stepper a {
+  padding: 3px 12px;
+  border: 1px solid var(--rule);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  text-align: center;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.stepper a[href]:hover {
+  border-color: var(--gold);
+  background: var(--gold);
+  color: var(--deep);
+}
+
+.stepper a[aria-disabled="true"] {
+  opacity: 0.35;
+}
+
+.panel-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px 14px;
+  margin-top: 16px;
+  padding: 13px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.panel-facts dd {
+  font-family: var(--display);
+  font-size: 1.2rem;
+  line-height: 1.25;
+}
+
+.panel-text {
+  margin-top: 14px;
+  font-size: 0.97rem;
+  color: var(--soft);
+}
+
+.unit-list {
+  margin-top: 14px;
+  border-top: 1px solid var(--rule);
+}
+
+.unit-list li {
+  border-bottom: 1px solid var(--rule);
+}
+
+.unit-list a {
+  display: grid;
+  grid-template-columns: 3em minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 6px;
+  transition: background-color 160ms ease;
+}
+
+.unit-list .is-hot a,
+.unit-list a:hover {
+  background: rgba(243, 235, 219, 0.07);
+}
+
+.unit-code {
+  font-family: var(--display);
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+}
+
+.unit-what {
+  font-size: 0.93rem;
+  color: var(--soft);
+}
+
+.unit-price {
+  font-weight: 400;
+  font-size: 0.97rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.unit-list .is-sold .unit-code,
+.unit-list .is-sold .unit-what {
+  color: var(--faint);
+}
+
+.pill {
+  display: inline-block;
+  padding: 1px 10px;
+  border: 1px solid var(--rule);
+  color: var(--faint);
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.pill.is-free {
+  border-color: var(--gold);
+  background: var(--gold);
+  color: var(--deep);
+}
+
+.pill.is-held {
+  border-color: var(--copper);
+  color: #e9b092;
+}
+
+.panel-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.small-print {
+  margin-top: 16px;
+  font-size: 0.8rem;
+  color: var(--faint);
+}
+
+/* ---------- 3. A home ---------- */
+
+.home-stage {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.home-pics,
+.home-pics > div {
+  position: absolute;
+  inset: 0;
+}
+
+/* A soft shade so the words and the small pictures read over any room. */
+.home-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(10, 31, 25, 0.5), rgba(10, 31, 25, 0) 16%),
+    linear-gradient(to top, rgba(10, 31, 25, 0.86), rgba(10, 31, 25, 0.25) 26%, rgba(10, 31, 25, 0) 44%);
+  pointer-events: none;
+}
+
+.home-caption {
+  position: absolute;
+  z-index: 1;
+  left: var(--pad);
+  bottom: 30px;
+  width: min(25rem, 42%);
+}
+
+.home-caption h3 {
+  font-size: clamp(2rem, 3.2vw, 3rem);
+  line-height: 1.05;
+}
+
+.home-caption p {
+  margin-top: 8px;
+  color: var(--soft);
+}
+
+.thumbs {
+  position: absolute;
+  z-index: 1;
+  right: 24px;
+  bottom: 30px;
+  display: flex;
+  gap: 10px;
+}
+
+.thumbs a {
+  display: block;
+  width: clamp(84px, 8vw, 118px);
+  opacity: 0.78;
+  transition: transform 220ms var(--ease), opacity 220ms ease;
+}
+
+.thumbs a:hover {
+  transform: translateY(-4px);
+  opacity: 1;
+}
+
+.thumb {
+  display: block;
+  aspect-ratio: 16 / 10;
+  outline: 1px solid var(--faint);
+}
+
+.thumb.is-empty {
+  padding: 0;
+}
+
+.thumb.is-empty::after {
+  content: "";
+}
+
+.thumb-name {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.8rem;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.thumbs a[aria-current="true"] {
+  opacity: 1;
+  color: var(--gold-bright);
+}
+
+.thumbs a[aria-current="true"] .thumb {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.home-kind {
+  margin-top: 6px;
+  color: var(--soft);
+}
+
+.home-price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin-top: 14px;
+}
+
+.home-price b {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.95rem;
+  line-height: 1;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--gold-bright);
+}
+
+.view-home .panel-facts > :last-child {
+  grid-column: 1 / -1;
+}
+
+/* ---------- Finding positions ---------- */
+
+.place-read {
+  position: fixed;
+  left: 12px;
+  top: calc(var(--bar-h) + 12px);
+  z-index: 40;
+  padding: 8px 12px;
+  background: #fff;
+  color: #111;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.8rem;
+}
+
+.is-placing .band {
+  outline: 1px dashed #fff;
+  background: rgba(207, 169, 104, 0.2);
+}
+
+/* ---------- Phones and narrow windows: each view is a normal page ---------- */
+
+@media (max-width: 1099px) {
+  :root {
+    --bar-h: 60px;
+  }
+
+  body {
+    font-size: 16.5px;
+  }
+
+  .bar {
+    background: rgba(12, 38, 31, 0.94);
+    border-bottom: 1px solid var(--rule);
+    pointer-events: auto;
+  }
+
+  .mark small {
+    display: none;
+  }
+
+  .bar .btn {
+    padding: 0.5em 1.1em;
+    font-size: 0.88rem;
+  }
+
+  .view {
+    position: relative;
+    inset: auto;
+    min-height: 100dvh;
+    overflow: visible;
+    padding: var(--bar-h) 0 32px;
+  }
+
+  /* Title, then the tower, then what is on the chosen floor, then every home. */
+  .view-tower {
+    display: flex;
+    flex-direction: column;
+    background: var(--page);
+  }
+
+  .lead {
+    display: contents;
+  }
+
+  .lead h1 {
+    order: 1;
+    margin: 26px var(--pad) 0;
+    font-size: clamp(2.7rem, 12vw, 3.8rem);
+  }
+
+  .lead-intro {
+    order: 2;
+    margin: 14px var(--pad) 0;
+  }
+
+  /* A tall window onto the wide picture, centred on the tower. */
+  .tower-frame {
+    order: 3;
+    position: relative;
+    right: auto;
+    top: auto;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    margin-top: 24px;
+    overflow: hidden;
+    transform: none;
+  }
+
+  .tower-in > .pic {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .tower-in {
+    inset: 0 auto 0 50%;
+    height: 100%;
+    aspect-ratio: 16 / 9;
+    transform: translateX(calc(-1% * var(--focus, 70)));
+  }
+
+  .tower-shade {
+    display: none;
+  }
+
+  .floor-line span {
+    right: auto;
+    left: 6px;
+  }
+
+  .readout {
+    order: 4;
+    max-width: none;
+    margin: 24px var(--pad) 0;
+  }
+
+  .readout-floor b {
+    font-size: 4.8rem;
+  }
+
+  .readout-line {
+    min-height: 0;
+  }
+
+  .readout .btn {
+    margin-top: 14px;
+  }
+
+  .stack {
+    order: 5;
+    position: static;
+    align-self: stretch;
+    width: auto;
+    margin: 32px var(--pad) 0;
+    padding: 0;
+    background: none;
+    border: 0;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    transform: none;
+  }
+
+  .stack-row {
+    grid-template-columns: 56px 1fr;
+    height: 26px;
+  }
+
+  .stack-n {
+    font-size: 0.82rem;
+  }
+
+  .stack-cells {
+    padding: 2px 0;
+    gap: 3px;
+  }
+
+  .facts {
+    order: 6;
+    margin: 28px var(--pad) 0;
+  }
+
+  .view-floor,
+  .view-home {
+    display: block;
+  }
+
+  .plan {
+    padding: 8px 0 0;
+  }
+
+  .plan-frame {
+    width: 100%;
+  }
+
+  .dot {
+    width: 34px;
+    height: 34px;
+    margin: -17px 0 0 -17px;
+    font-size: 0.95rem;
+  }
+
+  .panel {
+    overflow: visible;
+    padding: 22px var(--pad) 0;
+    background: none;
+    border-left: 0;
+  }
+
+  .home-stage {
+    overflow: visible;
+  }
+
+  .home-stage::after {
+    display: none;
+  }
+
+  .home-pics {
+    position: relative;
+    inset: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .home-caption {
+    position: static;
+    width: auto;
+    padding: 18px var(--pad) 0;
+  }
+
+  .thumbs {
+    position: static;
+    padding: 16px var(--pad) 4px;
+    overflow-x: auto;
+  }
+
+  .thumbs a {
+    flex: none;
+    width: 104px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}

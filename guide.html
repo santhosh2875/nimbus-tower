@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Picture guide | Nimbus 38</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --page: #eef0ea;
+      --sheet: #f9faf6;
+      --ink: #17221d;
+      --ink-soft: #56645c;
+      --line: #cdd3c9;
+      --accent: #1c6a48;
+      --accent-deep: #134d34;
+      --tint: #e1e9e0;
+      --sand: #d9ecc8;
+      --ok: #2d7a4f;
+      --display: "Archivo", Arial, sans-serif;
+      --text: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: var(--text);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+    a { color: var(--accent); }
+    code { font-family: var(--mono); font-size: 0.88em; background: var(--tint); padding: 0.1em 0.35em; border-radius: 4px; }
+
+    /* ---------- Sticky bar: how many pictures are in the folder ---------- */
+    .bar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 20px;
+      padding: 10px clamp(16px, 4vw, 40px);
+      background: rgba(238, 240, 234, 0.94);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .progress { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 0.92rem; font-weight: 500; }
+    .meter { width: 120px; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+    .meter span { display: block; height: 100%; width: 0; background: var(--ok); transition: width 300ms ease; }
+
+    .linkbtn {
+      border: 0; background: none; padding: 0; font: inherit; font-size: 0.9rem;
+      color: var(--accent); text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+    }
+
+    /* ---------- Page ---------- */
+    main { max-width: 860px; margin: 0 auto; padding: clamp(24px, 5vw, 56px) clamp(16px, 4vw, 40px) 80px; }
+
+    h1 { margin: 0 0 0.25em; font-family: var(--display); font-weight: 400; font-size: clamp(2.3rem, 5.4vw, 3.5rem); line-height: 1.04; }
+    .lede { margin: 0 0 24px; max-width: 62ch; color: var(--ink-soft); font-size: 1.05rem; }
+
+    .step { margin-top: clamp(40px, 7vw, 72px); }
+    .step > h2 { display: flex; align-items: baseline; gap: 14px; margin: 0 0 6px; font-size: 1.45rem; font-weight: 600; line-height: 1.2; }
+    .step > h2 .num { font-family: var(--display); font-weight: 400; font-size: 2.4rem; color: var(--accent); }
+    .step > p { margin: 0 0 18px; max-width: 66ch; color: var(--ink-soft); }
+
+    /* Model recommendation */
+    .model { padding: 18px 20px; border-radius: 10px; background: var(--ink); color: var(--sheet); }
+    .model .label { margin: 0; font-size: 0.85rem; color: rgba(251, 252, 251, 0.7); }
+    .model .name { margin: 2px 0 6px; font-size: 1.45rem; font-weight: 600; line-height: 1.2; }
+    .model .why { margin: 0 0 12px; max-width: 64ch; color: rgba(251, 252, 251, 0.86); }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+    .chips li { padding: 4px 11px; border-radius: 999px; background: rgba(240, 217, 164, 0.14); border: 1px solid rgba(240, 217, 164, 0.5); color: var(--sand); font-size: 0.88rem; font-weight: 500; }
+
+    /* One card per picture */
+    .asset { margin-top: 14px; padding: 16px 18px; background: var(--sheet); border: 1px solid var(--line); border-radius: 10px; }
+    .asset.is-found { border-color: var(--ok); }
+    .asset-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 10px; }
+    .asset-head h3 { margin: 0; font-size: 1.05rem; font-weight: 600; }
+    .status { margin-left: auto; padding: 2px 10px; border-radius: 999px; font-size: 0.82rem; font-weight: 600; background: var(--page); color: var(--ink-soft); border: 1px solid var(--line); }
+    .is-found .status { background: #dff1e4; color: var(--ok); border-color: #a9d6b8; }
+
+    .pic-num { padding: 2px 10px; border-radius: 999px; background: var(--ink); color: var(--sheet); font-size: 0.82rem; font-weight: 600; white-space: nowrap; }
+    .attach { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0 0 10px; padding: 9px 12px; border-radius: 8px; background: #f8ecd0; border: 1px solid #e6d3a3; font-size: 0.95rem; }
+    .attach.is-none { background: var(--page); border-color: var(--line); color: var(--ink-soft); }
+    .attach-pic { width: 96px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 4px; border: 1px solid var(--line); }
+    .attach-pic[hidden] { display: none; }
+
+    .which { width: 100%; margin: 18px 0 0; border-collapse: collapse; background: var(--sheet); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; font-size: 0.95rem; }
+    .which caption { padding: 0 0 8px; text-align: left; font-size: 1.1rem; font-weight: 600; }
+    .which th, .which td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+    .which th { font-weight: 600; background: var(--tint); }
+    .which tr:last-child td { border-bottom: 0; }
+
+    .asset-body { display: flex; gap: 14px; align-items: flex-start; }
+    .prompt { flex: 1; margin: 0; padding: 12px 14px; border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; background: var(--tint); font-size: 0.95rem; white-space: pre-wrap; }
+    .preview { flex: none; width: 150px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); }
+    .preview[hidden] { display: none; }
+
+    .asset-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 12px; font-size: 0.9rem; color: var(--ink-soft); }
+    .copy { border: 0; border-radius: 6px; padding: 8px 16px; background: var(--accent); color: #fff; font: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+    .copy:hover { background: var(--accent-deep); }
+    .copy.is-done { background: var(--ok); }
+
+    .note { margin: 14px 0 0; padding: 12px 14px; border-radius: 10px; background: #f8ecd0; border: 1px solid #e6d3a3; font-size: 0.93rem; }
+
+    @media (max-width: 620px) {
+      .bar { position: static; }
+      .asset-body { flex-direction: column; }
+      .preview { width: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) { .meter span { transition: none; } }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <div class="progress" aria-live="polite">
+      <div class="meter" aria-hidden="true"><span id="meterFill"></span></div>
+      <span id="progressText">Checking folder</span>
+      <button class="linkbtn" id="recheck" type="button">Check folder again</button>
+    </div>
+  </div>
+
+  <main>
+    <h1>Nine pictures, no video</h1>
+    <p class="lede">
+      One picture of the tower, two cutaway floor plans, and six rooms. Make them in this order, because later pictures need an earlier one attached. Every card below says which picture to attach.
+    </p>
+
+    <table class="which">
+      <caption>Which picture to attach in Higgsfield</caption>
+      <thead><tr><th>When you make</th><th>Attach this picture</th></tr></thead>
+      <tbody>
+        <tr><td>Picture 1, the tower</td><td>Nothing</td></tr>
+        <tr><td>Picture 2, usual floor plan<br>Picture 3, top floor plan</td><td>Picture 1, the tower</td></tr>
+        <tr><td>Pictures 4 to 7, the four rooms of a usual home</td><td>Picture 2, usual floor plan</td></tr>
+        <tr><td>Pictures 8 and 9, the two sky villa rooms</td><td>Picture 3, top floor plan</td></tr>
+      </tbody>
+    </table>
+
+    <div class="model">
+      <p class="label">Model to pick in Higgsfield</p>
+      <p class="name">Nano Banana Pro</p>
+      <p class="why">Marked Unlimited in your Higgsfield account, so with the Unlimited switch on it costs no credits. Use it for all nine so they share one look.</p>
+      <ul class="chips"><li>Unlimited switch on</li><li>Resolution 2K</li><li>Every picture 16:9</li></ul>
+    </div>
+
+    <p class="note">
+      <b>You only send me the pictures.</b> Download them as they come out of Higgsfield and send
+      me the zip. I name them, clean them up and place every marker by looking at your pictures.
+    </p>
+
+    <div id="groups"></div>
+  </main>
+
+  <script>
+  (() => {
+    "use strict";
+
+    const DIR = "assets/tower";
+    const TYPES = ["jpg", "png", "webp", "jpeg"];
+
+    const LOOK = "Photorealistic, highly detailed, natural colours. No people, no text, no logos, no labels, no signs.";
+    const STYLE = "Luxury interior style throughout: wide pale oak floors, book-matched cream marble, fluted walnut wall panels, bronze and brushed brass details, cream boucle and soft sage velvet fabrics, floor-to-ceiling glass, warm hidden lighting.";
+    const BACK = "The whole floor is in the picture, centred, on a plain, flat, very dark emerald green background (colour #0c261f) with nothing else around it.";
+    const ROOM = (what) => `Use the attached image: this is a room in one of the homes on that floor, built from the same materials. ${what} ${STYLE} Outside the glass is a wide open view from a high floor over a green golf course and a distant city skyline in warm golden late-afternoon light. Wide interior photograph for a luxury property brochure, taken at eye level. ${LOOK} 16:9.`;
+
+    const GROUPS = [
+      {
+        title: "The tower",
+        intro: "Make this one first and attach nothing. It is wide like all the others: 16:9. You will attach it later when you make the two floor plans.",
+        note: "<b>Check before going on:</b> the tower stands a little right of the middle with open sky on both sides, it is seen flat from the front (not from a corner), it stands straight, it reaches from near the bottom of the picture to near the top, and you can see a line on every floor. It should also look rich: curved glass, bronze, warm lights. Floors are picked by pointing at them, so if the tower is small or leaning, generate it again.",
+        items: [
+          { file: "tower", title: "The tower, wide",
+            text: `A wide cinematic architectural photograph of an elegant, ultra-luxury 38-storey residential tower at golden hour, just before sunset, taken from far away with a long lens so the vertical lines stay perfectly straight and parallel. The tower stands a little to the right of the middle of the picture, about two thirds of the way across, with clear open sky on both sides of it, and it is very tall in the frame: its crown is close to the top edge of the picture and its entrance is close to the bottom edge. The camera faces the front of the tower exactly square-on, not from a corner. The tower is slim and sculpted, the same width from its base to its crown, with softly curved glass corners, slim vertical bronze fins running its full height, and a deep curved balcony with a clear glass rail and a thin warm line of light along its edge on every floor, so each floor can be counted. Warm lights glow inside many of the homes behind bronze-tinted glass. The top two floors are set back as a glass crown with a softly lit rooftop pool, a slim pergola and olive trees. The bottom three floors are a grand base of pale travertine stone and tall bronze-framed glass, with a wide canopy entrance, a long reflecting pool and tall palms in front. The whole left half of the picture is open and calm: a wide sky in a soft gradient from warm peach at the horizon to deep blue above, with only a low, distant city skyline and dark green treetops along the bottom. No other tall building anywhere. High-end real estate advertising photograph, rich and refined. ${LOOK} 16:9.` },
+        ],
+      },
+      {
+        title: "The two floor plans",
+        intro: "Each is a cutaway model of one floor, like an architect's model with the ceiling lifted off. For both, attach Picture 1 (the tower).",
+        note: "<b>Check each plan:</b> the background is plain dark green with nothing else in it, the whole floor is in the picture, and you can tell the homes apart: four on the usual floor, two on the top one. I put a marker on each home.",
+        items: [
+          { file: "plan-typical", title: "Usual floor plan (four homes)", ref: "tower",
+            text: `Use the attached image: this is one floor of that same residential tower, shown as a cutaway isometric model with the ceiling and the floors above removed, seen from above at a three-quarter angle. ${BACK} The floor is a rectangle with a lift lobby and a short corridor in the middle and four separate apartments around it, one in each corner: two larger apartments with three bedrooms and two smaller apartments with two bedrooms. Every apartment has a living room with sofas and a dining table, an open kitchen with an island, bedrooms with beds, bathrooms, and a long balcony with a glass rail along the outside edge. ${STYLE} Warm lights glow inside every room. Architectural model render. ${LOOK} No dimensions. 16:9.` },
+          { file: "plan-sky", title: "Top floor plan (two sky villas)", ref: "tower",
+            text: `Use the attached image: this is the top level of that same residential tower, shown as a cutaway isometric model with the roof removed, seen from above at a three-quarter angle. ${BACK} The level holds only two large penthouse homes side by side, with a lift lobby between them. Each home has a wide living room with a tall glass corner and a floating staircase, an open kitchen, a large bedroom, and a long roof terrace along the outside edge with a narrow swimming pool glowing turquoise, sun beds and small olive trees in planters. ${STYLE} Warm lights glow inside every room. Architectural model render. ${LOOK} No dimensions. 16:9.` },
+        ],
+      },
+      {
+        title: "Rooms of a usual home",
+        intro: "Four rooms. For every one, attach Picture 2 (the usual floor plan), so the rooms look like they belong to that floor.",
+        items: [
+          { file: "home-living", title: "Living room", ref: "plan-typical", text: ROOM("The living room: floor-to-ceiling glass along the long wall, a large cream sofa and two armchairs on a pale rug, a low stone coffee table, and an oak dining table for eight behind them.") },
+          { file: "home-kitchen", title: "Kitchen", ref: "plan-typical", text: ROOM("The kitchen: a long island in cream marble with three leather stools, fluted walnut cabinets up to the ceiling, a brushed brass tap, built-in ovens, and a tall window at the end.") },
+          { file: "home-bedroom", title: "Main bedroom", ref: "plan-typical", text: ROOM("The main bedroom: a king bed with a sand-coloured fabric headboard, walnut bedside tables with brass lamps, glass on two sides at the corner of the building, and an open doorway to a walk-through wardrobe.") },
+          { file: "home-balcony", title: "Balcony", ref: "plan-typical", text: ROOM("The balcony, outdoors: a deep balcony with a clear glass rail, a small round table and two chairs, a long planter of green plants, a pale stone floor, and the open living room doors behind.") },
+        ],
+      },
+      {
+        title: "Rooms of a sky villa",
+        intro: "Two rooms. For both, attach Picture 3 (the top floor plan).",
+        items: [
+          { file: "sky-living", title: "Sky villa living room", ref: "plan-sky", text: ROOM("The living room of a penthouse: a double-height room with glass two floors tall on the corner, a floating oak staircase with a glass rail, a long cream sofa on a large rug, and a hanging light made of many small glass globes.") },
+          { file: "sky-terrace", title: "Sky villa terrace and pool", ref: "plan-sky", text: ROOM("The roof terrace, outdoors: a long narrow swimming pool glowing turquoise along the glass edge of the roof, two sun beds, an outdoor dining table for ten under a slim bronze pergola, and olive trees in planters.") },
+        ],
+      },
+    ];
+
+    const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+    // Every picture gets a number, so "attach Picture 2" always means one thing.
+    const numbered = {};
+    GROUPS.flatMap((g) => g.items).forEach((item, n) => { item.n = n + 1; numbered[item.file] = item; });
+
+    const attachLine = (item) => {
+      if (!item.ref) return `<p class="attach is-none"><b>Attach:</b> nothing. Only paste the prompt.</p>`;
+      const r = numbered[item.ref];
+      return `<p class="attach"><b>Attach:</b> Picture ${r.n}, ${esc(r.title)}<img class="attach-pic" alt="" hidden data-ref="${esc(r.file)}"></p>`;
+    };
+
+    const cards = [];
+    GROUPS.forEach((group, i) => {
+      const section = document.createElement("section");
+      section.className = "step";
+      section.innerHTML =
+        `<h2><span class="num">${i + 1}</span> ${esc(group.title)}</h2>` +
+        `<p>${esc(group.intro)}</p>` +
+        (group.note ? `<p class="note">${group.note}</p>` : "");
+      group.items.forEach((item) => {
+        const el = document.createElement("article");
+        el.className = "asset";
+        el.innerHTML =
+          `<div class="asset-head"><span class="pic-num">Picture ${item.n}</span><h3>${esc(item.title)}</h3><span class="status">Not in the site yet</span></div>` +
+          attachLine(item) +
+          `<div class="asset-body"><p class="prompt"></p><img class="preview" alt="" hidden></div>` +
+          `<div class="asset-foot"><button class="copy" type="button">Copy prompt</button>` +
+          `<span>Goes in the site as <code>${esc(item.file)}.jpg</code></span></div>`;
+        el.querySelector(".prompt").textContent = item.text;
+        el.querySelector(".copy").addEventListener("click", (e) => copy(item.text, e.currentTarget));
+        section.append(el);
+        cards.push({ el, file: item.file });
+      });
+      document.getElementById("groups").append(section);
+    });
+
+    async function copy(text, button) {
+      let ok = false;
+      try { await navigator.clipboard.writeText(text); ok = true; }
+      catch (_) {
+        const ta = document.createElement("textarea");
+        ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+        document.body.append(ta); ta.select();
+        try { ok = document.execCommand("copy"); } catch (_) { ok = false; }
+        ta.remove();
+      }
+      button.textContent = ok ? "Copied" : "Select the text and copy it";
+      button.classList.toggle("is-done", ok);
+      window.setTimeout(() => { button.textContent = "Copy prompt"; button.classList.remove("is-done"); }, 1800);
+    }
+
+    function findStill(file) {
+      return new Promise((resolve) => {
+        const attempt = (n) => {
+          if (n >= TYPES.length) return resolve(null);
+          const url = `${DIR}/${file}.${TYPES[n]}`;
+          const img = new Image();
+          img.onload = () => resolve(url);
+          img.onerror = () => attempt(n + 1);
+          img.src = `${url}?t=${Date.now()}`;
+        };
+        attempt(0);
+      });
+    }
+
+    let run = 0;
+    async function checkFolder() {
+      const mine = ++run;
+      const found = await Promise.all(cards.map((c) => findStill(c.file)));
+      if (mine !== run) return;
+      found.forEach((url, i) => {
+        const card = cards[i];
+        card.el.classList.toggle("is-found", Boolean(url));
+        card.el.querySelector(".status").textContent = url ? "In the site" : "Not in the site yet";
+        const preview = card.el.querySelector(".preview");
+        preview.hidden = !url;
+        if (url) preview.src = url;
+      });
+      // Show a small copy of the picture to attach, once that picture is in the site.
+      const urls = {};
+      cards.forEach((c, i) => { urls[c.file] = found[i]; });
+      document.querySelectorAll(".attach-pic").forEach((img) => {
+        const url = urls[img.dataset.ref];
+        img.hidden = !url;
+        if (url) img.src = url;
+      });
+      const done = found.filter(Boolean).length;
+      document.getElementById("meterFill").style.width = `${(done / cards.length) * 100}%`;
+      document.getElementById("progressText").textContent =
+        done === cards.length ? `All ${cards.length} pictures are in the site` : `${done} of ${cards.length} pictures in the site`;
+    }
+
+    document.getElementById("recheck").addEventListener("click", checkFolder);
+    window.addEventListener("focus", checkFolder);
+    checkFolder();
+  })();
+  </script>
+</body>
+</html>
